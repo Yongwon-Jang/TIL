@@ -182,3 +182,50 @@
   - 메서드명 축약 : 메서드 선언 시 function 키워드 생략 가능
   - 계산된 속성 : 객체를 정의할 때 key의 이름을 표현식을 이용하여 동적으로 생성 가능( 대괄호[] 안에서)
   - 구조 분해 할당 : 배열 또는 객체를 분해하여 속성을 변수에 쉽게 할당할 수 있는 문법
+
+
+
+#### spread 문법
+
+```javascript
+const a = [1, 2, 3, 4, 5]
+const b = ['a', 'b', 'c']
+
+let c = a.concat(b)
+c => [1, 2, 3, 4, 5, 'a', 'b', 'c']
+
+c = a + b (사용 불가)
+
+// 스프레드
+c = [ ...a, ...b]    // a를 풀어서 놓고, b를 풀어서 놓는 느낌
+c => [1, 2, 3, 4, 5, 'a', 'b', 'c']
+
+딕셔너리도 사용 가능
+```
+
+
+
+#### destructuring
+
+```javascript
+const a = {
+    b: 2,
+    c: 3
+}
+
+const b = a.b
+b => 2
+
+// 하지만 변수가 많아지면?
+const test = {
+    a:1, b:2, c:3, d:4, e: 5
+}
+
+let { a, b, d } = test
+
+=> 밑의 식과 동일한 의미
+let a = test.a
+let b = test.b
+let c = test.c
+```
+
