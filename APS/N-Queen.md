@@ -73,4 +73,3 @@ queen(0,col)
 
 print(ans)
 ```
-
