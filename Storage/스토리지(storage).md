@@ -19,7 +19,7 @@
   - 데이터나 여유 리소스를 다른 서버와 독립적으로 공유할 수 없다.
   - 물리적인 공간이 한계에 봉착 했을 때 확장이 어려움
 
-![das](../../../마크다운/das.PNG)
+![das](images/das.PNG)
 
 ### NAS
 
@@ -42,7 +42,7 @@
   - HTTP
   - AFP
 
-![nas](../../../마크다운/nas.PNG)
+![nas](images/nas.PNG)
 
 ### SAN
 
@@ -66,4 +66,5 @@
   - iSCSI
   - iSER
 
-![san](../../../마크다운/san.PNG)
+![san](images/san.PNG)
+
