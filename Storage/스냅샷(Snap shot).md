@@ -6,7 +6,7 @@
 
 - 스토리지에 저장된 데이터를 과거 시점으로 되돌릴 수 있다.
 
-
+---
 
 ### 스냅샷과 백업의 차이
 
@@ -22,7 +22,7 @@
     - 수정이 필요한 부분의 원본 데이터만을 입력해두기 때문에 전체를 복제하는 백업보다 성능상의 오버헤드를 줄일 수 있음
     - 빈번한 업데이트를 진행하는 경우 스냅샷이 적합
 
-
+---
 
 ### 스냅샷 종류
 
@@ -74,3 +74,50 @@
 
 - 장점
   - 스냅샷을 생성할 때마다 스토리지 공간을 매우 적게 소모하기 때문에 다른 방식에 비해 스냅샷을 빠르고 자주 생성할 수 있음
+
+---
+
+
+
+### Linux file system
+
+- EXT
+- XFS
+- ZFS
+- BTRFS
+
+
+
+### XFS
+
+- 실리콘 그래픽스(SGI)가 만든 고성능 저널링 파일 시스템(high-performance journaling file system)
+- 
+
+#### 특징
+
+- CentOS 7버전부터 기본 지원되는 파일 시스템
+- 
+
+
+
+### Reflink
+
+- XFS에 새로운 실험적 기능, 사용자가 파일 간에 데이터 블록을 공유 할 수 있도록 했음
+
+- 커널 수준 지원이 필요하기 때문에 비교적 최근 릴리스에서만 사용가능하다. 
+
+---
+
+### 스냅샷의 활용
+
+> 
+
+
+
+
+
+#### 참고 자료
+
+- https://tech.gluesys.com/blog/2020/12/16/storage_7_intro.html
+- https://pkalever.wordpress.com/2016/01/22/xfs-reflinks-tutorial/
+- https://blogs.oracle.com/linux/post/xfs-data-block-sharing-reflink
