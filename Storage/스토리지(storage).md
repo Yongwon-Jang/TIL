@@ -68,3 +68,22 @@
 
 ![san](images/san.PNG)
 
+
+
+### Scale Up 방식
+
+- 기존의 서버를 보다 높은 사양으로 업그레이드 하는 것. 예를 들면, 성능이나 용량 증가를 목적으로 하나의 서버에 디스크를 추가하거나 CPU, 메모리를 업그레이드 시키는것
+
+### Scale Out 방식
+
+- 장비를 추가해서 확장하는 방식
+- 기존 서버만으로 한계에 도달했을 때, 비슷한 사양의 서버를 추가로 연결해 처리할 수 있는 데이터 용량을 증가시키고 기존 서버의 부하를 분담한다.
+
+#### Scale Up vs Scale Out
+
+![scale](images/scale.PNG)
+
+
+
+- 참고
+  - https://tecoble.techcourse.co.kr/post/2021-10-12-scale-up-scale-out/
