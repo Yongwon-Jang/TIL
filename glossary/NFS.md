@@ -16,3 +16,17 @@
   - 접근이 좋다
 - 단점
   - 보안에 취약
+
+
+
+ ### NFS 서버 설정
+
+- 준비 : VM 2대 (server 1대, client 1대)
+
+
+
+[장용원] 5월 18일 업무
+
+- delta-replicator 분석
+  - agent
+- reflink 성능 테스트
