@@ -11,8 +11,8 @@
 
 ```
 $ cd ~ 
-$ vi.vimrc
+$ vi ~/.vimrc
 
-set mumber
+set number 입력 후 저장
 ```
 
