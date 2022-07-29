@@ -27,9 +27,7 @@ echo "Hello World"
 
 - 실행 결과
 
-![shell](images/shell-16590552549521.PNG)
-
-
+![shell](images/shell.PNG)
 
 #### Shell Script 기본 문법
 
@@ -41,7 +39,7 @@ echo "Hello World"
 
 - 결과
 
-![변수2](images/변수2.PNG)
+![변수2](images/변수2-16590578831902.PNG)
 
 - 대소문자 구문 함, 띄어쓰기 (X)
 
