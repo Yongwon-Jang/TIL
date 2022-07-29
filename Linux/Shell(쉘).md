@@ -35,7 +35,15 @@ echo "Hello World"
 
 - 예시
 
-![변수1](images/변수1.PNG)
+```shell
+#!/bin/bash
+
+name="Owen"
+age="30"
+
+echo "$name"
+echo "$age"
+```
 
 - 결과
 
@@ -53,7 +61,17 @@ if[조건]; then ... elif[조건]; then ... else ... fi 문
 
 - 예시
 
-![ifshell](images/ifshell.PNG)
+```shell
+#!/bin/bash
+
+a=10
+
+if [ "$a -eq 9"]; then
+echo "value is 9"
+elif [ "$a" -gt 9 ]; then
+echo "value is greater than 9"
+fi
+```
 
 - 결과
 
@@ -91,6 +109,52 @@ if[조건]; then ... elif[조건]; then ... else ... fi 문
 
 
 
-- 참고
-  - https://jink1982.tistory.com/48
-  - https://minkwon4.tistory.com/159
+##### 반복문
+
+- while 문
+
+  - 예시
+
+  ```bash
+  #!/bin/bash
+  
+  a=0
+  
+  while (( "${a}" < 5 )); do
+  echo "${a}"
+  (( a = "&{a}" + 1 ))
+  done
+  ```
+
+  - 결과
+
+![whilesh2](images/whilesh2.PNG)
+
+- for 문
+
+  - 예시
+
+  ```shell
+  #!/bin/bash
+  
+  a=(0 1 2 3 4)
+   
+  for i in ${a[@]}; do
+      echo "$i"
+  done
+   
+  for (( i = 0; i < 5; i++)); do
+      echo "$i"
+  done
+  ```
+
+  - 결과
+
+  ![foir](images/foir.PNG)
+
+
+
+##### 참고
+
+- https://jink1982.tistory.com/48
+- https://minkwon4.tistory.com/159
