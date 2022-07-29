@@ -17,11 +17,11 @@ $ cd /etc/sysconfig/network-scripts/
 $ vi ifcfg-ens33  # 각자 환경에 따라 다를 수 있음 ls명령어로 확인
 ```
 
-![network](C:\Users\sanique3\Desktop\마크다운\network.PNG)
+![network](images/network.PNG)
 
 - 이더넷 카드가 ens33으로 설정되어 있는 것을 확인할 수 있다. eth0 와 같이 다른 이름으로 되어있을 수도 있음
 
-  ![ip](C:\Users\sanique3\Desktop\마크다운\ip.PNG)
+  ![ip](images/ip.PNG)
 
 수정 전 초기 화면
 
