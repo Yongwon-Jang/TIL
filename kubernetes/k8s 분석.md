@@ -105,7 +105,7 @@ spec:
 
 ### 다른 방안?
 
-### ![when node becomes unhealthy](C:\Users\sanique3\Desktop\when node becomes unhealthy.PNG)
+### ![when node becomes unhealthy](images/when node becomes unhealthy.PNG)
 
 - manifast 파일 수정
 
@@ -136,12 +136,3 @@ spec:
 - 참고
   - https://yjwang.tistory.com/102
   - https://medium.com/tailwinds-navigator/kubernetes-tip-how-to-make-kubernetes-react-faster-when-nodes-fail-1e248e184890
-
-
-
-
-
-[장용원] 5월 4일 업무 보고
-
-- CDM-Replicator 정책 기능 구현
-  - AddBroker, GetBrokerDetail
