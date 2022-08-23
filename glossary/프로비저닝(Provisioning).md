@@ -21,9 +21,38 @@
 
 
 
+#### 스토리지 프로비저닝
+
+- **Thick Provisioning**
+
+  - 요청한 프로비저닝만큼 자원을 있는 그대로 할당하는 방법
+  - 리소스 추가 요청이 들어왔을 때, 추가 요청에 해당하는 리소스를 전부 할당해 준다.
+  - 장점
+    - 이해하기 쉽다.
+    - 설계, 구축, 관리가 편리하다.
+  - 단점
+    - 리소스 관리의 효율성이 많이 떨어진다.
+
+  ![Thick](images/Thick.PNG)
+
+- **Thin Provisioning**
+
+  - 요청한 프로비저닝만큼 리소스를 할당하나 실제로는 물리적 리소스는 일정부분만 주고 나머지는 논리 리소스를 할당한다.
+  - 요청한 리소스에 물리적 리소스 할당과 논리적 리소스 할당을 나누어 관리하며 사용자가 물리적 리소스 이상을 사용하면 추가로 물리 리소스를 제공한다.
+  - 장점
+    - 리소스 관리의 효율성이 높다
+  - 단점
+    - 물리적 리소스 할당과 논리적 리소스 할당을 나눠야 하기에 설계, 구축, 관리가 까다롭다.
+    - 리소스 할당의 수행을 위해 장비의 스펙도 높아야 한다.
+
+  ![Thin](images/Thin-16612207395881.PNG)
+
+
+
 #### 참고
 
 - https://blue-mina.tistory.com/34
 - https://www.redhat.com/ko/topics/automation/what-is-provisioning
 - https://jins-dev.tistory.com/entry/%ED%94%84%EB%A1%9C%EB%B9%84%EC%A0%80%EB%8B%9DProvisioning-%EC%9D%B4%EB%9E%80
+- https://tech.gluesys.com/blog/2021/03/17/storage_8_intro.html
 
