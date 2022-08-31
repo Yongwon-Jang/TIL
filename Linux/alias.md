@@ -9,7 +9,7 @@
 ####  alias 확인
 
 ```
-$ alias
+# alias
 ```
 
 - 현재 등록된 alias 리스트를 확인 할 수 있다.
@@ -20,5 +20,20 @@ $ alias
 
 
 
+#### alias 등록
 
+- vi 편집기로 ~/.bash_profile에 들어가서 사용하고 싶은 alias를 입력하면 된다.
+- `alias [별칭]='[명령어]'` 이런식으로 입력하고 저장해주면 된다.
+
+```
+# vi ~/.bash_profile
+```
+
+![aliasvi](images/aliasvi.PNG)
+
+- 저장 후 다음 명령어를 입력하면 alias가 등록된다.
+
+```
+# source ~/.bash_profile
+```
 
