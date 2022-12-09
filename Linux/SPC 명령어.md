@@ -17,7 +17,6 @@
 
 ```bash
 $ scp [옵션] [파일명] [원격지 계정]@[원격지 IP]:[파일이 저장 될 경로]
-
 ex) scp -rp ./start.sh root@192.168.0.10:/root/transactionTest/
 ```
 
@@ -33,3 +32,4 @@ ex) scp -rp ./start.sh root@192.168.0.10:/root/transactionTest/
 | c    | 압축하여 복사                     |
 | v    | 복사 과정을 출력                  |
 | a    | 아카이브 모드로 복사              |
+
