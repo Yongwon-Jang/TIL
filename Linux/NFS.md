@@ -37,15 +37,15 @@ nfs-utils-2.3.3-51.el8.x86_64
 2. 설치가 안되어 있다면 설치
 
 ```
-$ yum install nfs-utils
+$ yum install nfs-utils -y
 ```
 
 3. 재실행
 
 ```
-$ systemctl start nfs-server
-$ systemctl enable nfs-server
-$ systemctl enable rpcbind 
+systemctl start nfs-server
+systemctl enable nfs-server
+systemctl enable rpcbind 
 ```
 
 4. 마운트 할 디렉토리 생성
@@ -115,21 +115,21 @@ nfs-utils-2.3.3-51.el8.x86_64
 2. 설치가 안되어 있다면 설치
 
 ```
-$ yum install nfs-utils
+$ yum install nfs-utils -y
 ```
 
 3. 재실행
 
 ```
-$ systemctl start nfs-server
-$ systemctl enable nfs-server
-$ systemctl enable rpcbind 
+systemctl start nfs-server
+systemctl enable nfs-server
+systemctl enable rpcbind 
 ```
 
 4. NFS 서버 마운트 확인
 
 ```
-$ showmount -e 192.168.0.39
+$ showmount -e 192.168.6.105
 /test 192.168.0.*
 ```
 
@@ -156,5 +156,21 @@ Filesystem              Type      Size  Used Avail Use% Mounted on
 $ vi /etc/fstab
 
 192.168.0.39:/test /nfs                         nfs     default         0 0  
+```
+
+
+
+
+
+#### reboot 해도 마운트 설정 유지하기
+
+- 위와 같이 nfs 마운트를 하고 클라이언트를 reboot 하게 되면 mount가 풀려있다. reboot 후에도 mount를 유지하기 위해서는 다음과 같은 설정이 필요하다.
+
+```
+[root]# vi /etc/fstab
+
+## 마지막 줄에 다음과 같이 설정 추가
+192.168.6.106:/home/nfs/test1 /home/nfs/tgt1 nfs defaults 0 0
+[NFS 서버 IP]:[NFS 서버 공유 경로] [클라이언트 공유 경로] nfs defaults 0 0
 ```
 
