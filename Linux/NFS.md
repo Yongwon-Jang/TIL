@@ -150,16 +150,6 @@ Filesystem              Type      Size  Used Avail Use% Mounted on
 192.168.0.39:/test      nfs4      100G  2.8G   98G   3% /nfs
 ```
 
-7. 부팅 시 자동으로 마운트 될 수 있도록 설정
-
-```
-$ vi /etc/fstab
-
-192.168.0.39:/test /nfs                         nfs     default         0 0  
-```
-
-
-
 
 
 #### reboot 해도 마운트 설정 유지하기
