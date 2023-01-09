@@ -41,3 +41,63 @@
     - 클러스터 안에서 외부에 접속 시 사용할 도메인을 등록해서 사용
     - 클러스터 도메인이 실제 외부 도메인으로 치환되어 동작
 
+
+
+### Service 사용
+
+- Service 생성
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  labels:
+    app: nginx-app
+spec:
+  selector:
+    app: nginx-app
+  type: NodePort
+  ports:
+  - nodePort: 31000
+    ports: 80
+    targetPort: 80
+```
+
+
+
+- pod 생성
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+matadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-app
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:1.7.9
+        port:
+          containerPort: 80
+```
+
+![nodeport](images/nodeport.PNG)
+
+
+
+
+
+#### 참조
+
+- https://yoonchang.tistory.com/49
