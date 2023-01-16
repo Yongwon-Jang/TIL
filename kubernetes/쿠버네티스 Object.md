@@ -1,9 +1,18 @@
-## Object in k8s
+## Objects in k8s
 
 > - Kubernetes의 Object는 쿠버네티스 시스템에서 영구한 객체이다. 즉 오프젝트가 생성되면 kubernetes는 이 상태를 영구히 유지하기 위해 작동한다.
 > - Object는 spec, status등의 값을 가지고, Key-Value 형태로 etcd에 저장된다
+> - "Persistent entities in the kubernetes system"으로 정의되어 있으며 Kubernetes에 저장된 실체들 이라고 생각하면 도니다.
 
-#### 기본 Object
+#### Object 필드
+
+- 모든 k8s 객체들은 공통적으로 두 개의 필드를 가진다
+  - Spec : 객체가 가질 상태에 대한 명세 정보
+  - Status : 실제 클러스터에서 객체가 가진 상태 정보(Kubernetes가 계속 검증하고 반영한다.)
+
+
+
+#### 기본 Objects
 
 1. Pod
 
