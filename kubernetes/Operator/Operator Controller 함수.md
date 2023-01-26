@@ -39,7 +39,7 @@
 - 모든 `Controller`는 `reconcile loop`를 실행하기 위해  `Reconcile()` Method 를 가진다.
   - ` reconcile loop`는 실제 상태를 CR 상태로 적용하기 위해 돌아가는 루프 정도로 이해하면 될 것같다.
 
-- ex
+- ex)
 
   ```go
   func (r *MemcachedReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -79,3 +79,163 @@
   ```
 
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```go
+func (r *MyController) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&corev1alpha1.MyCustomResource{}).
+		Complete(r)
+}
+```
+
+- MyController가 MyCustomResource를 reconcile 하기 위해 hook 되어있다는 것을 쉽게 알 수 있다.
+
+
+
+```
+Let’s take a look at theFor keyword. If you had asked me when I read this method first time, I would have easily guessed that the MyControlleris being hooked to reconcile against the MyCustomResource{} type. So, any create/update/delete happening with a MyCustomResource object in the cluster would trigger the Reconcile() method of MyController
+```
+
+- MyCustomResource 에서 create/update/delete 가 발생하면 reconcile. 방법이 트리거 된다.
+
+
+
+```
+But what if MyController is not thaatt simple. What if it’s one heck of a complicated controller which is creating and owning other resources like Pods and trying to watch and reconcile them as well.
+```
+
+
+
+```
+Let’s consider our sweet MyController . This controller is special and a bit crazy. What it does is that whenever aMyCustomResource object is created in the cluster, it creates annginx:latest pod with the labels foo: bar . But this controller is very nitpicky. It doesn’t want any add/update/delete happening to the labels of this pod.
+```
+
+
+
+```
+You might be noticing a ton of flaws here like missing finalizers resolution, missing status reporting, etc. I won’t be focusing on that stuff for this blog as the purpose of this blog is around just digging into the aspects of For() , Owns() and Watches()
+```
+
+
+
+```
+The above Reconcile()method will be triggered whenever a create/update/delete would happen with a MyCustomResource
+```
+
+
+
+```
+Someone goes into the cluster and manually removes or updates the foo: bar label. Our beloved MyController wouldn’t want that and would rather expect to be instantly triggered again and undergo through a reconciliation to bring the desired state of the pod back with the desired labels foo: bar
+```
+
+
+
+
+
+```go
+  // set MyCustomResource as the owner of the above pod
+  if err := controllerutil.SetControllerReference(&myCustomResource, &desiredPod, r.Scheme); err != nil {
+      return ctrl.Result{}, err
+  }
+```
+
+- child pod도 감시하기 위한 코드?
+
+
+
+```go
+func (r *MyController) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&corev1alpha1.MyCustomResource{}).
+		Owns(&corev1.Pod{}).  // trigger the r.Reconcile whenever an Own-ed pod is created/updated/deleted
+		Complete(r)
+}
+```
+
+- Owns() 로 Reconcile 함수에 MyCustomResource 뿐만 아니라 Pod
+
+
+
+
+
+```go
+func (r *MyController) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+  // Get the MyCustomResource being reconciled here
+  myCustomResource := corev1alpha1.MyCustomResource{}
+  if err := r.Get(ctx, req.NamespacedName, &mycustomResource); err != nil {
+    // ignore the error if it corresponds to MyCustomResource not found. 
+    return ctrl.Result{}, client.IgnoreNotFound(err)
+  }
+  
+  // fetch the name and namespace of MyCustomResource
+  name, namespace := myCustomResource.Name, myCustomResource.Namespace
+  labels := map[string]string{
+    "foo": "bar",
+  }
+  
+  // desired pod to end up in the cluster
+  desiredPod := corev1.Pod{
+    ObjectMeta: metav1.ObjectMeta{
+      Name: name,
+      Namespace: namespace,
+      Labels: labels,
+    },
+    Spec: corev1.PodSpec{
+      Containers: []corev1.Container{
+        {
+          Image: "nginx:latest",
+          Name: "nginx-container",
+        },
+      },
+    },
+  }
+  
+  // first let's check if it already exists
+  foundPod := &corev1.Pod{}
+  if err := r.Get(ctx, client.ObjectKeyFromObject(&desiredPod), &foundPod); err != nil {
+    // create the desired pod if the pod doesn't exist already
+    if errors.IsNotFound(err) {
+      return ctrl.Result{}, r.Create(ctx, &desiredPod)
+    }
+    return ctrl.Result{}, err
+  }
+  
+  // pod was found
+  // validate the labels of the found pod
+  expectedLabels := map[string]string{
+    "foo": "bar",
+  }
+  foundLabels := foundPod.Labels
+  // if the foundLabels match the expectedLabels, no need to do anything: just exit peacefully
+  if reflect.DeepEqual(expectedLabels, foundLabels) {
+    return ctrl.Result{}, nil
+  }
+  
+  // else, update the foundPod with expectedLabels
+  foundPod.Labels = expectedLabels
+  return ctrl.Result{}, r.Update(ctx, foundPod)
+}
+```
+
+- Reconcile 전체 코드
+
+
+
+
+
+- `For(<ownerType>)` — Tells the manager to trigger the `Reconcile(...)` whenever any object of <ownerType> is created/updated/deleted
+- `Owns(<childType>)` — Tells the manager to trigger the `Reconcile(...)` whenever any object of <childType> having an ownerReference to <ownerType> is created/updated/deleted.
