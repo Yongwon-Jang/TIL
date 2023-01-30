@@ -99,6 +99,9 @@ Export list for localhost.localdomain:
 
 ```
 $ service firewalld stop
+
+## 재부팅시 방화벽 실행하지 않기
+$ systemctl disable firewalld
 ```
 
 
