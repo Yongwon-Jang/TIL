@@ -25,4 +25,3 @@ ex) abc라는 폴더를 aaa.tar.gz로 압축하고자 한다면
 ex) aaa.tar.gz라는 tar.gz파일 압축을 풀고자 한다면
   > tar -zxvf aaa.tar.gz
 ````
-
