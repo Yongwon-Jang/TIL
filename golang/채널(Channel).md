@@ -151,3 +151,19 @@
 
   - select문에서 default 케이스를 지정하면 case애 지정된 모든 채널이 사용 가능 상태가 아닐 때 default 케이스를 수행한다.
   - default 케이스는 select 문에서 case의 채널들이 사용 가능 상태가 아닐 경우, 대기(block)하지 않고 바로 무언가를 처리해야 할 때 사용한다.
+
+
+
+#### Buffered Channel VS Unbuffered Channel
+
+- Unbuffered Channel
+  - 하나의 수신자가 송신자로부터 데이터를 받을때까지 블로킹
+- Buffered Channel
+  - 버퍼의 크기를 초과하는 데이터를 채널에 넣게 되면 `fatal error: all goroutines are asleep - deadlock!` 에러가 발생한다.
+  - 수신자가 데이터를 받을 준비가 되어 있더라도 송신자의 지정된 버퍼만큼 데이터를 보내고 다른일을 수행할 수 있돌고 한다.
+
+
+
+#### 참조
+
+- https://judo0179.tistory.com/88
