@@ -70,6 +70,9 @@ https://www.debian.org/doc/debian-policy/ch-controlfields.html#source-package-co
 
 ```
 # dpkg -b pkg
+
+# ls
+pkg pkg.deb
 ```
 
 
@@ -79,7 +82,7 @@ https://www.debian.org/doc/debian-policy/ch-controlfields.html#source-package-co
 ```
 # apt-get update
 # apt-get install gdebi-core
-# gdebi pkg
+# gdebi pkg.deb
 ```
 
 - 위 순서대로 실행하면 패키지 설치가 완료된다.
