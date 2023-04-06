@@ -87,3 +87,14 @@ pkg pkg.deb
 
 - 위 순서대로 실행하면 패키지 설치가 완료된다.
 
+
+
+
+
+### 에러 처리
+
+`apt-get install gdebi-core`를 했을 때 `Unable to locate package gdebi-core` 이런 에러가 발생하였다. 
+
+- 시스템 패키지 목록이 오래되어 있어서 발생했을 가능성이 높음
+- `apt-update` 후 재설치
+- 그래도 같은 에러가 나오면 `sudo add-apt-repository universe` 후 update 하고 재설치
