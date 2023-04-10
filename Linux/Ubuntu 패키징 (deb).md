@@ -93,6 +93,9 @@ pkg pkg.deb
 
 ```
 # sudo dpkg --remove <패키지 이름>
+
+관련 디렉토리, 파일 다 지우고싶으면
+# sudo dpkg --purge <패키지 이름>
 ```
 
 - 패키지 이름 확인
