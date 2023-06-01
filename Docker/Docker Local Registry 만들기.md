@@ -86,3 +86,25 @@ tcp6       0      0 :::5000                 :::*                    LISTEN      
   ```
 
 - push를 하면 local registry에 있는 image를 사용할 수 있다.
+
+
+
+#### 5. registry 에 push 된 이미지 목록 확인
+
+- curl 명령어
+
+```
+curl http://localhost:5000/v2/_catalog
+```
+
+- 응답
+
+```json
+{
+  "repositories": [
+    "image1",
+    "image2",
+    "image3"
+  ]
+}
+```
