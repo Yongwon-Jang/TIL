@@ -140,6 +140,11 @@ type Memcached struct {
   - `Owns` : 여기서는 컨트롤러가 `Memecached` CR 에 대한 Reconcile 작업 중에 자동으로 `Deployment` 오브젝트를 생성하고 관리할 수 있도록 해준다.
   - `WithOptions(controller.Options{MaxConcurrentReconciles: 2})` : 동시에 실행되는 조정 작업의 최대 개수를 2로 설정. 이를 통해 동시에 실행되는 작업 수를 제한할 수 있음.
   - `Complete(r)` : 컨트롤러의 설정을 완료 한다. `r` 은 `MemcachedReconciler` 구조체의 인스턴스
+  - `For` 메서드와 `Owns` 메서드의 차이
+    - `For` 은 컨트롤러가 관리해야 하는 **주 리소스**를 지정, `Owns`는 컨트롤러가 소유해야 하는 **종속 리소스**를 지정한다.
+    - **주 리소스**는  컨트롤러의 주요 작업 대상이 되는 리소스, **종속 리소스**는 주 리소스의 생성, 업데이트 또는 삭제에 의존적인 리소스이다.
+    - 예를 들어 `Owns(&appsv1.Deployment{})` 는 `&appsv1.Deployment` 리소스가 주 리소스에 종속되어야 하며, 컨트롤러는 이를 관리하고 유지하도록 설정
+
 
   
 
@@ -346,17 +351,104 @@ type Memcached struct {
       - `Status`를 `True`로, `Reason`을 `Reconciling`으로
     - 마지막으로, `ctrl.Result{}`를 반환하여 리콘실리에이션을 완료하고 성공적으로 처리되었음을 나타낸다.
 
-- `Reconciler` return 옵션
+  - `Reconciler` return 옵션
 
-  - `return ctrl.Result{}, err`
-    - `Reconliation` 작업 중 오류가 발생
-  - `return ctrl.Result{Requeue: true}, nil`
-    - `Reconliation` 을 완료 했지만, 다시 `Reconliation`  하기 위해 `Requeue` 한다.
-    - 리소스나 환경의 변경으로 인해 추가적인 조치가 필요한 경우 사용
-  - `return ctrl.Result{}, nil`
-    - `Reconliation` 을 성공적으로 완료하고 추가적인 작업이 필요하지 않을 때 사용된다.
-  - ` return ctrl.Result{RequeueAfter: nextRun.Sub(r.Now())}, nil`
-    - 주기적으로 리소스 상태를 갱신하거나 외부 API로부터 데이터를 가져와야 할때, `Requeue`를 설정하여 일정한 주기로 작업을 실행하도록 한다.
+    - `return ctrl.Result{}, err`
+      - `Reconliation` 작업 중 오류가 발생
+    - `return ctrl.Result{Requeue: true}, nil`
+      - `Reconliation` 을 완료 했지만, 다시 `Reconliation`  하기 위해 `Requeue` 한다.
+      - 리소스나 환경의 변경으로 인해 추가적인 조치가 필요한 경우 사용
+    - `return ctrl.Result{}, nil`
+      - `Reconliation` 을 성공적으로 완료하고 추가적인 작업이 필요하지 않을 때 사용된다.
+    - ` return ctrl.Result{RequeueAfter: nextRun.Sub(r.Now())}, nil`
+      - 주기적으로 리소스 상태를 갱신하거나 외부 API로부터 데이터를 가져와야 할때, `Requeue`를 설정하여 일정한 주기로 작업을 실행하도록 한다.
+
+- 권한 지정 및 RBAC 매니페스트 생성
+
+  - 컨트롤러가 관리하는 리소스와 상호 작용하려면 특정 RBAC 권한이 필요하다. RBAC 마커를 통해 지정할 수 있다.
+
+  ```go
+  //+kubebuilder:rbac:groups=cache.example.com,resources=memcacheds,verbs=get;list;watch;create;update;patch;delete
+  //+kubebuilder:rbac:groups=cache.example.com,resources=memcacheds/status,verbs=get;update;patch
+  //+kubebuilder:rbac:groups=cache.example.com,resources=memcacheds/finalizers,verbs=update
+  //+kubebuilder:rbac:groups=core,resources=events,verbs=create;patch
+  //+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+  //+kubebuilder:rbac:groups=core,resources=pods,verbs=get;list;watch
+  
+  func (r *MemcachedReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+    ...
+  }
+  ```
+
+  - 구성
+
+  ```go
+  //+kubebuilder:rbac:groups=<API 그룹>,resources=<리소스>,verbs=<동작>
+  ```
+
+  - 각 주석 라인은 특정 그룹 및 리소스에 대한 RBAC 권한을 정의한다. 아래 코드를 예를 들어 설명해보면
+
+  ```go
+  //+kubebuilder:rbac:groups=cache.example.com,resources=memcacheds,verbs=get;list;watch;create;update;patch;delete
+  ```
+
+  - `cache.example.com` 그룹의 `memcacheds` 리소스에 대해 다양한 동작(예: get, list, watch ... 등) 에대한 권한을 설정하는 주석이다.
+  - 이러한 주석은 `Kuberbuilder`가 자동으로 생성한 RBAC 매니페스트 파일을 생성할 때 사용된다.
 
 
+
+
+
+#### 오퍼레이터 이미지 레지스트리 구성
+
+- **Test 단계에서는 이미지 Build 및 Push를 안해도 된다.**
+
+#### [TODO]
+
+- operator-sdk init 할 때 `domain`을 `cdm.datacommand.co.kr `로 해줘야 한다.
+
+- 코드를 모두 작성 해서 `make manifests` 까지 했다면, Operator 이미지를 빌드하고 레지스트리에 푸시
+
+  
+
+
+
+### TEST
+
+- `make deploy`
+
+  - `make deploy`를 해주면 CRD가 kubeernetes 클러스터에 등록 된다.
+
+  ```
+  # kubectl get crd
+  
+  NAME                                             CREATED AT
+  '''
+  memcacheds.cache.example.com                     2023-06-01T06:33:35Z
+  '''
+  ```
+
+  - CRD가 등록되어 있어야 CR 매니페스트를 정의해서 apply 할 수 있다.
+
+  
+
+- 이후 CR ymal 파일을 작성해 apply 해주면 된다.
+
+  - yaml 파일 예시
+
+  ```yaml
+  apiVersion: cache.example.com/v1alpha1
+  kind: Memcached
+  metadata:
+    name: memcached-sample
+  spec:
+    size: 3
+    containerPort: 11211
+  ```
+
+  - `apiVersion` : CRD의 API 버전을 나타낸다. 일반적으로 `group/version` 형식을 따른다.
+  - `kind` : CRD에서 지정한 리소스의 이름
+  - `kubectl get crd <crd-name> -o yaml` 명령어를 통해 crd의 매니페스트를 확인할 수 있다.
+
+  
 
