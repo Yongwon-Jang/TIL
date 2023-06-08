@@ -146,7 +146,7 @@ type Memcached struct {
     - 예를 들어 `Owns(&appsv1.Deployment{})` 는 `&appsv1.Deployment` 리소스가 주 리소스에 종속되어야 하며, 컨트롤러는 이를 관리하고 유지하도록 설정
 
 
-  
+
 
 - Reconcile 함수
 
@@ -417,7 +417,7 @@ type Memcached struct {
 
 - `make deploy`
 
-  - `make deploy`를 해주면 CRD가 kubeernetes 클러스터에 등록 된다.
+  - `make deploy`를 해주면 `controller`가 `kubernetes 클러스터`에 배포된다.
 
   ```
   # kubectl get crd
