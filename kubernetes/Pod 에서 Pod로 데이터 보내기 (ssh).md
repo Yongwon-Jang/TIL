@@ -90,4 +90,8 @@ spec:
 
 #### 결과
 
+```
+# rsync -avz -e ssh a.txt root@10.233.64.9:/var/lib/www/html/a.txt
+```
+
 ![image-20230629132447334](images/image-20230629132447334.png)
