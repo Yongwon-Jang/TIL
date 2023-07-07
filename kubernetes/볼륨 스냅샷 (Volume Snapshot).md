@@ -22,17 +22,43 @@
 - 다음 과정을 진행하기 이전에 `VolumeSnapshot`, `VolumeSnapshotContent`, `VolumeSnapshotClass` CRD 를 k8s 클러스터에 등록해야 합니다.
 
 ```
-## CRD 생성
+## CRD 생성 버전에 맞게 apply 해야 한다.
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-3.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-3.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-3.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/master/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/master/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/master/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+
 ## 컨트롤러 생성
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-3.0/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-3.0/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
+
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/master/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/master/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
+
 ```
 
+- CRD 및 컨트롤러 생성 확인
+
+```
+# kubectl get crd
+volumesnapshotclasses.snapshot.storage.k8s.io    2023-06-30T07:56:21Z
+volumesnapshotcontents.snapshot.storage.k8s.io   2023-06-30T07:56:22Z
+volumesnapshots.snapshot.storage.k8s.io          2023-06-30T07:56:23Z
+
+# kubectl get pods -n kube-system | grep snapshot
+snapshot-controller-85f68864bb-stt97          1/1     Running            0                 61s
+snapshot-controller-85f68864bb-xbqdc          1/1     Running            0                 61s
+```
+
+
+
 ### VolumeSnapshot 생성
+
+> rbd.csi.ceph.com 인 csi driver 에서 진행하였고, Storageclass 등 ceph 관련 리소스는 미리 생성되어 있다고 가정한다.
 
 1. PVC 생성
 
@@ -40,14 +66,15 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snaps
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: my-pvc
+  name: rbd-pvc
 spec:
-  storageClassName: standard-rwo
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
+  volumeMode: Filesystem
   resources:
     requests:
-      storage: 1Gi
+      storage: 100Gi
+  storageClassName: csi-rbd-sc
 ```
 
 ```
@@ -57,34 +84,29 @@ spec:
 2. POD 생성
 
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
+---
+apiVersion: v1
+kind: Pod
 metadata:
-  name: hello-app
+  name: csi-rbd-demo-pod
+  labels:
+    app: my-app
 spec:
-  selector:
-    matchLabels:
-      app: hello-app
-  template:
-    metadata:
-      labels:
-        app: hello-app
-    spec:
-      containers:
-      - name: hello-app
-        image: google/cloud-sdk:slim
-        args: [ "sleep", "3600" ]
-        volumeMounts:
-        - name: sdk-volume
-          mountPath: /usr/share/hello/
-      volumes:
-      - name: sdk-volume
-        persistentVolumeClaim:
-          claimName: my-pvc
+  containers:
+    - name: rbd-csi
+      image: nginx
+      volumeMounts:
+        - name: mypvc
+          mountPath: /var/lib/www/html
+  volumes:
+    - name: mypvc
+      persistentVolumeClaim:
+        claimName: rbd-pvc
+        readOnly: false
 ```
 
 ```
-# kubectl apply -f my-deployment.yaml
+# kubectl apply -f my-pod.yaml
 ```
 
 3. VolumeSnapshotClass 객체 생성
@@ -93,11 +115,19 @@ spec:
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
-  name: my-snapshotclass
-#parameters: # 커스텀 스토리지 위치를 사용하려면 지정 
-#  storage-locations: us-east2
-driver: pd.csi.storage.gke.io
+  name: csi-rbd-class
+  annotations:
+    snapshot.storage.kubernetes.io/is-default-class: "true"
+driver: rbd.csi.ceph.com
 deletionPolicy: Delete
+parameters:
+  clusterID: 47891e81-1fd8-4385-84b9-b964d077f1a9
+  pool: kubernetes
+  userId: admin
+  userName: admin
+  userKey: AQAXVu5hbYDiDhAA05jFqNeg0uSTx5jRQXy40A==
+  csi.storage.k8s.io/snapshotter-secret-name: csi-rbd-secret
+  csi.storage.k8s.io/snapshotter-secret-namespace: default
 ```
 
 ```
@@ -110,11 +140,11 @@ deletionPolicy: Delete
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshot
 metadata:
-  name: my-snapshot
+  name: my-snap
 spec:
-  volumeSnapshotClassName: my-snapshotclass
+  volumeSnapshotClassName: csi-rbd-class
   source:
-    persistentVolumeClaimName: my-pvc
+    persistentVolumeClaimName: rbd-pvc
 ```
 
 ```
@@ -123,6 +153,16 @@ spec:
 
 - `VolumeSnapshot`을 생성하면 `volumeSnapshotClass`를 통해 `VolumeSnapshotContent` 가 자동으로 생성된다.
 - `VolumeSnapshot` 을 생성 한 시점의 스냅샷 메타 데이터가 `VolumeSnapshotContent` 에 저장된다.
+
+##### 볼륨 스냅샷 및 볼륨 스냅샷 컨텐츠 생성 결과
+
+- 볼륨 스냅샷
+
+![image-20230705080841343](images/image-20230705080841343.png)
+
+- 볼륨 스냅샷 컨텐츠
+
+![image-20230705080855019](images/image-20230705080855019.png)
 
 ### VolumeSnapshot 복원
 
@@ -136,23 +176,24 @@ kind: PersistentVolumeClaim
 metadata:
   name: pvc-restore
 spec:
-  dataSource: ## 이 부분에서 복원할 snapshot 데이터를 가져온다.
-    name: my-snapshot
+  dataSource:
+    name: my-snap
     kind: VolumeSnapshot
     apiGroup: snapshot.storage.k8s.io
-  storageClassName: standard-rwo
   accessModes:
     - ReadWriteOnce
+  volumeMode: Filesystem
   resources:
     requests:
-      storage: 1Gi
+      storage: 100Gi
+  storageClassName: csi-rbd-sc
 ```
 
 ```
 # kubectl apply -f pvc-restore.yaml
 ```
 
-2. POD 수정
+2. Pod 수정 or 새로운 Pod 생성
 
 ```yaml
 ...
@@ -163,7 +204,7 @@ volumes:
 ```
 
 ```
-# kubectl apply -f my-deployment.yaml
+# kubectl apply -f my-pod.yaml
 ```
 
 - volume 부분을 업데이트 한다.
@@ -177,3 +218,13 @@ volumes:
 ![image-20230622154208172](images/image-20230622154208172.png)
 
 - 이런 구조이지 않을까 하고 생각하며 그려보았다.
+
+
+
+
+
+CSI 볼륨 스냅샷을 사용하여 앱 개발자는 다음을 수행할 수 있습니다.
+
+- 애플리케이션 또는 클러스터 수준 스토리지 백업 솔루션을 개발하기 위한 빌딩 블록으로 볼륨 스냅샷을 사용합니다.
+- 이전 개발 버전으로 빠르게 롤백합니다.
+- 매번 전체 사본을 만들지 않아도 되므로 스토리지를 보다 효율적으로 사용할 수 있습니다.

@@ -90,6 +90,40 @@ NAME            STATUS   VOLUME                                     CAPACITY   A
 mypvc-dynamic   Bound    pvc-8c64a988-6280-43f2-9445-42e155e4c0ca   1G         RWX            nfs-client     137m
 ```
 
-
-
 - 이후에 POD를 등록해서 사용하면 된다.
+
+```yaml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-dynamic-pod
+spec:
+  containers:
+    - name: web-server
+      image: nginx
+      volumeMounts:
+        - name: mypvc
+          mountPath: /home/yongwon
+  volumes:
+    - name: mypvc
+      persistentVolumeClaim:
+        claimName: mypvc-dynamic
+        readOnly: false
+```
+
+- 볼륨 마운트 경로에서 파일을 생성하면
+
+```
+/home/yongwon# ls
+a.txt
+```
+
+- NFS Server에서도 생성 된 것을 볼 수 있다.
+
+  - `default-mypvc-dynamic-pvc-8c64a988-6280-43f2-9445-42e155e4c0ca/` 라는 디렉터리가 생성
+
+  ```
+  default-mypvc-dynamic-pvc-8c64a988-6280-43f2-9445-42e155e4c0ca# ls
+  a.txt
+  ```
