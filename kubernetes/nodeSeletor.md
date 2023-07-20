@@ -113,3 +113,8 @@ k8s1   Ready    control-plane   78d   v1.26.3   beta.kubernetes.io/arch=amd64,be
 
 - 해당 label 이 삭제 된 것을 확인할 수 있다.
 
+
+
+#### 참고
+
+- https://ikcoo.tistory.com/87
