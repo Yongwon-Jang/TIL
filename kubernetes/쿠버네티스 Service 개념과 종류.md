@@ -62,7 +62,7 @@ spec:
   type: NodePort
   ports:
   - nodePort: 31000
-    ports: 80
+    port: 80
     targetPort: 80
 ```
 
