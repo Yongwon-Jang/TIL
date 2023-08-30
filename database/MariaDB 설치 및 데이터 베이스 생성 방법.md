@@ -84,3 +84,46 @@ MariaDB [(none)]> CREATE DATABASE [데이터베이스이름];
 ```
 MariaDB [(none)]> USE [데이터베이스이름];
 ```
+
+
+
+### 테이블 생성 및 데이터 삽입/조회
+
+- CREATE TABLE 문을 사용하여 테이블 생성
+
+```sql
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT
+);
+```
+
+- DESCRIBE 문으로 테이블 구조 확인
+
+```
+DESCRIBE users;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| id    | int(11)     | NO   | PRI | NULL    |       |
+| name  | varchar(50) | YES  |     | NULL    |       |
+| age   | int(11)     | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+
+```
+
+- 작업할 데이터베이스로 이동해서 INSERT INTO 로 데이터를 테이블에 삽입
+
+```
+INSERT INTO users (id, name, age) VALUES (1, 'John', 30);
+```
+
+- 데이터 조회
+
+```
+SELECT * FROM users;
+```
+
+
+
