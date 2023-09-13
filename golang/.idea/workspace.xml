@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/../Linux/Ubuntu 패키징 (deb).md" beforeDir="false" afterPath="$PROJECT_DIR$/../Linux/Ubuntu 패키징 (deb).md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../glossary/트랜잭션 ACID.md" beforeDir="false" afterPath="$PROJECT_DIR$/../glossary/트랜잭션 ACID.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kubernetes/subPath.md" beforeDir="false" afterPath="$PROJECT_DIR$/../kubernetes/subPath.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,17 +22,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/sanique3"
+  }
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VgoProject">
-    <integration-enabled>true</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>
