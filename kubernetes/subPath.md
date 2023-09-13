@@ -46,6 +46,7 @@ spec:
       volumeMounts:
         - name: my-volume
           mountPath: /data
+          # 변수 확장에는 괄호를 사용한다(중괄호 아님).
           subPathExpr: $(PREFERRED_TXT_FILE)
   volumes:
     - name: my-volume
