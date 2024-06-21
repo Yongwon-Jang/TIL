@@ -80,3 +80,4 @@
   - 예를들면 A 에 있는 ceph image 를 B 에서 export 할 수 있다.
 - 원격 export 명령어 : `rbd export <원격 pool-name>/<원격 image-name> <export-file> --conf <conf 파일> --keyring <keyring 파일>`
 - 다른  rbd 명령어들도 `--conf`, `--keyring`옵션을 주면 실행할 수 있다.
+
