@@ -19,6 +19,11 @@
 - image 정보 확인 : `rbd info <image-name> --pool <pool-name>`
 
 - image 삭제 : `rbd rm <image-name> --pool <pool-name>`
+- image 사용 용량 확인 : `rbd disk-usage <pool-name>/<image-name>`
+  ```
+  NAME                                         PROVISIONED USED
+  csi-vol-c23e3e23-fd69-4276-94a6-2b2ad60abbb8       1 GiB 140 MiB
+  ```
 
 ### Snapshot
 
@@ -28,12 +33,13 @@
 - snapshot 롤백(복구?) : `rbd snap rollback <pool-name>/<image-name>@<snapshot-name>`
 - snapshot 보호 : `rbd snap protect <pool-name>/<image-name>@<snapshot-name>`
 - snapshot 보호 해제 : `rbd snap unprotect <pool-name>/<image-name>@<snapshot-name>`
+- 보호되지 않은 스냅샷 전부 삭제 : `rbd snap purge <pool-name>/<image-name>`
 
 ### Export
 
 - export(이미지 내보내기) : `rbd export <pool-name>/<image-name> <export-file>`
-
-- export diff(두 스냅샷 차이 내보내기) : `rbd export-diff <pool-name>/<image-name> --from-snap <start-snap> --to-snap <end-snap> <diff-file>`
+- export diff(원본부터 스냅샷 까지) : `rbd export-diff <pool-name>/<image-name>@<snapshot-name>`
+- export diff(해당 스냅샷 이후의 변경사항을 추출) : `rbd export-diff <pool-name>/<image-name> --from-snap <start-snap> <diff-file>`
 
   - `<pool-name>`: 이미지를 포함하는 풀의 이름.
   - `<image-name>`: 차이를 계산할 이미지의 이름.
@@ -80,4 +86,3 @@
   - 예를들면 A 에 있는 ceph image 를 B 에서 export 할 수 있다.
 - 원격 export 명령어 : `rbd export <원격 pool-name>/<원격 image-name> <export-file> --conf <conf 파일> --keyring <keyring 파일>`
 - 다른  rbd 명령어들도 `--conf`, `--keyring`옵션을 주면 실행할 수 있다.
-
