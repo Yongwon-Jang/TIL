@@ -8,7 +8,7 @@
   - `<pgp-num>`: PGP 수 (일반적으로 PG 수와 동일하게 설정)
 - pool 초기화 : `rbd pool init <pool-name>`
   - pool 을 rbd 이미지 스토리지에 사용할 수 있도록 초기화
-- pool 삭제 : `ceph osd delete <pool-name> <pool-name> --yes-i-really-really-mean-it`
+- pool 삭제 : `ceph osd pool delete <pool-name> <pool-name> --yes-i-really-really-mean-it`
 -  pool 조회 : `ceph osd pool ls`
 
 ### Image
