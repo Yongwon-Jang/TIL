@@ -78,7 +78,14 @@
 
     - **백업**: 병합 작업을 하기 전에 원본 diff 파일을 백업하는 것이 좋습니다. 잘못된 병합 작업으로 인해 데이터 손상이 발생할 수 있기 때문입니다.
 
-
+```
+merge-diff first-diff-path second-diff-path merged-diff-path
+이미지의 두 개의 연속 증분 diff를 하나의 단일 diff로 병합합니다.
+첫 번째 diff의 끝 스냅샷은 두 번째 diff의 시작 스냅샷과 동일해야 합니다.
+첫 번째 diff는 stdin의 경우일 수 있고 병합된 diff는 stdout의 경우일 수 있습니다.
+이는 'rbd merge-diff first second - | rbd merge-diff - 세 번째 결과'.
+이 명령은 현재 stripe_count == 1 인 소스 증분 diff만 지원합니다.
+```
 
 ### 원격 rbd 명령어 사용
 
