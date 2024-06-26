@@ -16,3 +16,6 @@
 - 마운트된 경로 해제 : `umount /mnt`
 - 매핑된 이미지 확인 : `rbd device list`
 - 매핑 해제 : `rbd unmap /dev/rbdX`
+
+#### 파일시스템 만들기
+- `mkfs.ext4 /dev/rbd0`
