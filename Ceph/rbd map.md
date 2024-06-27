@@ -19,3 +19,5 @@
 
 #### 파일시스템 만들기
 - `mkfs.ext4 /dev/rbd0`
+#### map 안될때
+- `rbd feature disable yw/test object-map fast-diff deep-flatten`
