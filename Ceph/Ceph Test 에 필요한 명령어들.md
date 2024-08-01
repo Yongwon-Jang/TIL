@@ -39,13 +39,12 @@
 
 - export(이미지 내보내기) : `rbd export <pool-name>/<image-name> <export-file>`
 - export diff(원본부터 스냅샷 까지) : `rbd export-diff <pool-name>/<image-name>@<snapshot-name>`
-- export diff(해당 스냅샷 이후의 변경사항을 추출) : `rbd export-diff <pool-name>/<image-name> --from-snap <start-snap> <diff-file>`
+- export diff(해당 스냅샷 이후의 변경사항을 추출) : `rbd export-diff <pool-name>/<image-name>@<end-snap> --from-snap <start-snap> <diff-file>`
 
   - `<pool-name>`: 이미지를 포함하는 풀의 이름.
   - `<image-name>`: 차이를 계산할 이미지의 이름.
   - `<start-snap>`: 시작 스냅샷의 이름.
   - `<end-snap>`: 끝 스냅샷의 이름.
-
   - `<diff-file>`: 내보낼 차이 파일의 경로와 이름.
 
 ### Import
