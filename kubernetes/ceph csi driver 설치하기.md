@@ -8,7 +8,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
-2. helm repo 로수터 ceph csi driver 설치
+2. helm repo 로 부터 ceph csi driver 설치
 
 ```
 # helm repo add ceph-csi https://ceph.github.io/csi-charts
