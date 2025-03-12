@@ -81,7 +81,6 @@
 4. 해당 PVC에 복원을 하기 위한 `ReplicationDestination` 생성
    - 이 과정에서 소스에서 타겟으로의 데이터 복제(Rsync)가 발생
     ```yaml
-    ---
     apiVersion: volsync.backube/v1alpha1
     kind: ReplicationDestination
     metadata:
