@@ -122,12 +122,11 @@ spec:
   - Persistent Volume(PV) 복제 및 백업의 상태를 추적하고 관리할 수 있도록 모니터링 기능을 제공
   - 이를 통해 백업/복제 작업의 성공 여부, 수행 시간, 스토리지 사용량 등을 실시간으로 확인할 수 있다.
 
-    | Metric 이름 | 설명 |
-    |------------|------|
-    | `volsync_replication_success_total` | 성공한 복제 작업 수 |
-    | `volsync_replication_failure_total` | 실패한 복제 작업 수 |
-    | `volsync_replication_duration_seconds` | 복제 작업 수행 시간(초) |
-    | `volsync_storage_usage_bytes` | 백업 데이터가 차지하는 스토리지 크기(바이트) |
+    | Metric 이름 | 설명          |
+    |------------|-------------|
+    | `volsync_missed_intervals_total` | 실패한 복제 작업 수 |
+    | `volsync_sync_duration_seconds` | 볼륨 동기화 간격   |
+    | `volsync_volume_out_of_sync` | 동기화 실패 상태   |
 
 
 - 최종 확인할 내용
