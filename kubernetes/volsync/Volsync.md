@@ -18,13 +18,14 @@
 
 ### Volsync의 5가지 Mover
 
-| 복제 방식          | 방식 설명 | 특징                                                  | 사용 사례 |
-|----------------|------------|-----------------------------------------------------|------------|
-| **Rclone**     | 다양한 클라우드 스토리지를 지원하는 오픈소스 도구 | - 클라우드 스토리지 간 복제<br>- 다양한 스토리지 백엔드 지원<br>- 파일 단위 복제 | - S3, Google Drive, Dropbox 등의 클라우드 스토리지로 백업 |
-| **Restic**     |  Restic 기반 데이터 무버를 사용하여 PersistentVolume 데이터의 백업을 지원 | - 다른 방식들과는 다르게 클러스터 간 데이터 동기화 목적이 아닌 데이터 백업이 목적     | - 주기적인 백업 및 데이터 보호 |
-| **Rsync(SSH)** | 가장 일반적인 파일 동기화 도구 | - 효율적인 파일 복사 및 동기화<br>- 네트워크를 통한 원격 복제              | - 빠른 데이터 동기화가 필요할 때 |
-| **Rsync-TLS**  | Rsync에 TLS 암호화를 추가한 방식 | - Rsync 기능 + 데이터 암호화<br>- 안전한 원격 전송                 | - 보안이 중요한 환경에서 Rsync 사용 |
-| **Syncthing**  | 실시간 동기화가 가능한 P2P 방식 파일 복제 도구 | - 실시간 복제 지원<br>- 변경 감지 기능                           | - 여러 클러스터 간 실시간 데이터 동기화 |
+| 복제 방식          | 설명                                    | 특징                                                  | 사용 사례                                           |
+|----------------|---------------------------------------|-----------------------------------------------------|-------------------------------------------------|
+| **Rclone**     | 다양한 클라우드 스토리지를 지원하는 오픈소스 도구           | - 클라우드 스토리지 간 복제<br>- 다양한 스토리지 백엔드 지원<br>- 파일 단위 복제 | - S3, Google Drive, Dropbox 등의 클라우드 스토리지로 백업    |
+| **Restic**     | 고속, 효율적인 데이터 백업을 위한 오픈소스 백업 솔루션 | - 다른 방식들과는 다르게 클러스터 간 데이터 동기화 목적이 아닌 데이터 백업이 목적     | - 주기적인 백업 및 데이터 보호                              |
+| **Rsync(SSH)** | 가장 일반적인 파일 동기화 도구                     | - 효율적인 파일 복사 및 동기화<br>- 네트워크를 통한 원격 복제              | - 빠른 데이터 동기화가 필요할 때                             |
+| **Rsync-TLS**  | Rsync에 TLS 암호화를 추가한 방식                | - Rsync 기능 + 데이터 암호화<br>- 안전한 원격 전송                 | - 보안이 중요한 환경에서 Rsync 사용                         |
+| **Syncthing**  | 실시간 동기화가 가능한 P2P 방식 파일 복제 도구          | - 실시간 복제 지원<br>- 변경 감지 기능                           | - 여러 클러스터 간 실시간 데이터 동기화<br/>- 스냅샷 기능은 지원하지 않는다. |
+
 
 ### CopyMethod
 - Source
@@ -32,7 +33,7 @@
     - Clone
         - 소스 PVC를 그대로 복제해여 새로운 볼륨을 생성
     - Direct
-        - data mover가 소스 PVC를 직접 사용 (시점 유지는 어떻게 할 수 있는지?)
+        - data mover가 소스 PVC를 직접 사용
     - Snapshot
         - VolumeSnapshot을 생성한 다음, 해당 스냅샷을 사용하여 새 볼륨을 생성
 - Destination
@@ -74,6 +75,13 @@
         address: my.host.com
         copyMethod: Snapshot
     ```
+  
+    - 추가 옵션
+      - destinationPVC : 자동으로 PVC를 생성하지 않고 기존에 있는 PVC를 지정할 수 있다.
+      - cleanupTempPVC : 동기화가 완료되면 PVC를 삭제 (destinationPVC가 지정되어있으면 이 옵션은 무시)
+      - sshKeys : 소스와의 연결을 인증하기 위한 ssh 키가 포함된 Secret의 이름
+      - serviceType : volsync는 ReplicationSource와 ReplicationDestination 간의 통신을 위해 Service를 생성하는데 그 Service가 어떤 타입으로 생성될지 결정 (ClusterIP or LoadBalancer)
+      - port : ssh를 통해 연결하는 데 사용되는 TCP 포트 번호
 
 ### 복제 흐름
 ![img.png](img.png)
@@ -103,8 +111,6 @@
   | `0 3 1 * *` | 매월 1일 새벽 3시에 실행 |
   | `*/30 * * * *` | 30분마다 실행 |
 
-- retain
-    - 백업본을 몇 개 유지할지 결정
 ```yaml
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
@@ -114,10 +120,8 @@ metadata:
 spec:
   rsync:
     schedule: "0 2 * * *"
-    retain:
-      min: 5
-      max: 20
 ```
+
 - Metrics & monitoring
   - Persistent Volume(PV) 복제 및 백업의 상태를 추적하고 관리할 수 있도록 모니터링 기능을 제공
   - 이를 통해 백업/복제 작업의 성공 여부, 수행 시간, 스토리지 사용량 등을 실시간으로 확인할 수 있다.
@@ -128,8 +132,4 @@ spec:
     | `volsync_sync_duration_seconds` | 볼륨 동기화 간격   |
     | `volsync_volume_out_of_sync` | 동기화 실패 상태   |
 
-
-- 최종 확인할 내용
-  - 스케줄, 리테인 쪽 코드 확인 / 클린업은 언제 실시하는지
-  - Mover 별 스크립트 확인. 실제로 cmd 에서 실행하는지
-  - syncthing 가 volsync 에서 어떻게 사용되는지? / 스냅샷을 사용하는지 (copyMethod이 없다. 스냅샷을 사용할 수 없는것 같다 실시간 동기화 기능만 제공)
+    
