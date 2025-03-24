@@ -29,7 +29,7 @@
 
 ### CopyMethod
 - Source
-  - copyMethod에 따른 PiT(Point-in-Time) 사본 생성 방법 지정
+  - CopyMethod에 따른 PiT(Point-in-Time) 사본 생성 방법 지정
     - Clone
         - 소스 PVC를 그대로 복제해여 새로운 볼륨을 생성
     - Direct
@@ -104,7 +104,7 @@
 - scheduler
 
   | 표현식 | 설명 |
-      |--------|------|
+  |--------|------|
   | `0 * * * *` | 매시간 0분마다 실행 |
   | `0 3 * * *` | 매일 새벽 3시에 실행 |
   | `0 3 * * 1` | 매주 월요일 새벽 3시에 실행 |
