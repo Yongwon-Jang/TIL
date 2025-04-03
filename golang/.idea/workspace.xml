@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="Golang OOP">
-      <change afterPath="$PROJECT_DIR$/../Script/.idea/Script.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../database/.idea/database.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../kubernetes/Helm/.idea/Helm.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../network/.idea/network.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../python/.idea/material_theme_project_new.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../python/.idea/python.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../python/.idea/python.iml" afterDir="false" />
-    </list>
+    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="gorm session" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,7 +85,8 @@
     <MESSAGE value="Method Chaining" />
     <MESSAGE value="Escape Analysis, GC" />
     <MESSAGE value="Golang OOP" />
-    <option name="LAST_COMMIT_MESSAGE" value="Golang OOP" />
+    <MESSAGE value="gorm session" />
+    <option name="LAST_COMMIT_MESSAGE" value="gorm session" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
