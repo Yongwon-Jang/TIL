@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="gorm session" />
+    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="gorm 포인터">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -86,7 +88,8 @@
     <MESSAGE value="Escape Analysis, GC" />
     <MESSAGE value="Golang OOP" />
     <MESSAGE value="gorm session" />
-    <option name="LAST_COMMIT_MESSAGE" value="gorm session" />
+    <MESSAGE value="gorm 포인터" />
+    <option name="LAST_COMMIT_MESSAGE" value="gorm 포인터" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
