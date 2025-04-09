@@ -63,4 +63,67 @@ T1:
 
 ---
 
-필요하시면 실제 DBMS에서 이 규약이 어떻게 적용되는지도 예시 들어서 알려드릴게요.
+## 🔷 2단계 락킹(2PL)의 실제 DBMS 활용
+
+### 1️⃣ 대표 DBMS와 2PL 적용 예
+
+| DBMS | 동시성 제어 방식 | 2PL 적용 여부 |
+|------|------------------|----------------|
+| **MySQL (InnoDB)** | **Strict 2PL** + MVCC | ✅ Yes |
+| **PostgreSQL** | MVCC 중심, 내부적으로 락 사용 | ⛔ 2PL 직접 X (MVCC 우선) |
+| **Oracle DB** | MVCC + 락 (Serializable 시 2PL 유사 동작) | ⭕ 조건부 사용 |
+| **SQL Server** | Lock-based isolation levels (Read committed 등) | ✅ Yes |
+| **DB2** | Strict 2PL 기반 | ✅ Yes |
+
+> 💡 **Strict 2PL**: 트랜잭션이 커밋되기 전까지 **락을 절대 해제하지 않는** 강력한 형태로, 실제 DBMS에서는 주로 이 형태를 채택합니다.
+
+---
+
+## 🔸 실제로 어떻게 쓰일까?
+
+### 예: MySQL InnoDB에서의 트랜잭션 처리
+
+```sql
+START TRANSACTION;
+SELECT * FROM accounts WHERE id = 1 FOR UPDATE;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+COMMIT;
+```
+
+이 쿼리는 다음과 같은 방식으로 처리됩니다:
+
+1. `SELECT ... FOR UPDATE` → 해당 row에 대해 **exclusive lock(X락)** 획득
+2. 이후 업데이트 → 동일한 락 사용
+3. **커밋 전까지는 락 유지 (Strict 2PL)**
+4. 커밋 시 모든 락 **한 번에 해제**
+
+➡️ **락 획득 단계 → 해제 단계로 단방향 진행 (2단계)**  
+➡️ **Strict 2PL** 로 **직렬 가능성 보장**
+
+---
+
+## 🔍 DBMS는 왜 Strict 2PL을 쓸까?
+
+| 이유 | 설명 |
+|------|------|
+| ✅ 직렬 가능성 보장 | 락이 해제되기 전까지 변경 불가 |
+| 🔒 교착 상태 감지 | Lock Wait Timeout / Deadlock Detection |
+| ⛔ 성능 제한 | 높은 동시성에서 병목 가능성 있음 |
+| 🤝 트랜잭션 신뢰성 ↑ | 확실한 동시성 보장 가능 |
+
+---
+
+## 📌 요약
+
+| 항목 | 내용 |
+|------|------|
+| 실제 사용 여부 | 대부분의 DBMS에서 사용 (또는 유사하게 구현) |
+| 사용 형태 | 주로 **Strict 2PL** (락 해제는 커밋 시점까지 금지) |
+| 예시 DBMS | MySQL(InnoDB), SQL Server, DB2 등 |
+| 예외 | PostgreSQL/Oracle은 MVCC 기반이지만, 일부 격리수준에서는 유사 동작 |
+| 역할 | **직렬 가능성 보장**, **데이터 일관성 유지** |
+
+---
+
+원리와 예제를 같이 보면서 정리해봤는데, 특정 DBMS에 대한 동작이 궁금하다면 그 DB에 맞춰 더 자세히 설명해줄 수도 있어요!  
+원하는 DB가 있다면 알려줘요 🙂
