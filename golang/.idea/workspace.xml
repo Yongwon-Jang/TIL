@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="클린아키텍처">
-      <change afterPath="$PROJECT_DIR$/../kubernetes/volsync/syncthingTmp/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../kubernetes/volsync/syncthingTmp/syncthing scan 과정.md" afterDir="false" />
-    </list>
+    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="go 정규식" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,7 +88,8 @@
     <MESSAGE value="gorm session" />
     <MESSAGE value="gorm 포인터" />
     <MESSAGE value="클린아키텍처" />
-    <option name="LAST_COMMIT_MESSAGE" value="클린아키텍처" />
+    <MESSAGE value="go 정규식" />
+    <option name="LAST_COMMIT_MESSAGE" value="go 정규식" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

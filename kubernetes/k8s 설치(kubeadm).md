@@ -158,3 +158,72 @@ kubectl get pods -A
 
 필요하시면 Calico CNI, 고가용성(HA) 클러스터, 워커 노드 조인 등도 추가로 도와드릴 수 있습니다.
 이제 다음으로 무엇을 하시려 하나요? (예: 워커 노드 조인, 테스트 앱 배포 등)
+
+
+---
+네! `kubeadm join` 명령어는 워커 노드를 기존 마스터(컨트롤 플레인) 클러스터에 연결할 때 사용하는 명령입니다.
+
+---
+
+## `kubeadm join` 명령어 구성과 설명
+
+```bash
+kubeadm join <마스터IP:포트> --token <토큰> --discovery-token-ca-cert-hash <해시>
+```
+
+* **`192.168.1.100:6443`**
+
+    * 마스터 노드의 API 서버 IP와 포트
+    * 워커 노드가 이 주소로 클러스터와 통신해서 연결 요청을 보냅니다.
+
+* **`--token abcdef...`**
+
+    * 마스터가 생성한 **일회용 인증 토큰**
+    * 워커 노드가 인증을 위해 필요
+    * 토큰은 `kubeadm init` 후 자동 생성되며, `kubeadm token create` 로 새로 만들 수도 있습니다.
+
+* **`--discovery-token-ca-cert-hash sha256:xxxxxxxx`**
+
+    * API 서버의 CA 인증서 해시값
+    * 워커 노드가 연결할 마스터 서버의 신뢰성을 검증하기 위한 값입니다.
+    * 보안을 위해 꼭 필요합니다.
+
+---
+
+## 워커 노드를 클러스터에 연결하는 과정
+
+1. 마스터에서 `kubeadm init` 할 때 토큰이 생성됩니다.
+2. 토큰과 CA 해시값을 워커 노드에 전달합니다.
+3. 워커 노드에서 `kubeadm join` 명령어를 실행하면, 마스터와 연결되어 클러스터의 워커 노드로 등록됩니다.
+4. 연결된 워커 노드는 마스터가 관리하는 Pod를 실행할 수 있습니다.
+
+---
+
+## 토큰 및 CA 해시 값 조회 방법
+
+* 토큰 확인:
+
+```bash
+kubeadm token list
+```
+
+* CA 인증서 해시 구하기:
+
+```bash
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | \
+openssl rsa -pubin -outform der 2>/dev/null | \
+sha256sum | awk '{print $1}'
+```
+
+---
+
+## 정리
+
+* **`kubeadm join` 명령은 워커 노드를 클러스터에 연결하는 공식 명령어**
+* 추후 언제든 워커 노드를 추가 가능
+* 보안 토큰과 CA 인증서 해시를 통해 안전하게 연결됨
+
+---
+
+필요하면 워커 노드에서 실제로 `kubeadm join` 실행하는 방법도 자세히 알려드릴게요!
+추가 질문 있나요?
