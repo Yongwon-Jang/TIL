@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="go 팩토리 함수" />
+    <list default="true" id="16979b15-c6ab-41b9-ae88-7dc3c45b0034" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/../Linux/lvm/LVM TEST doc.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Linux/lvm/LVM 테스트.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Linux/lvm/lvm metadata.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Linux/lvm/vgimportclone.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/얕은복사와 깊은복사.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
