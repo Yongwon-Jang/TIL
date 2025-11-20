@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3f2cc8a-d1fc-4873-9a0b-5a50aaaae8de" name="변경" comment="Topology">
-      <change afterPath="$PROJECT_DIR$/../kubernetes/volsync/syncthingTmp/img.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../kubernetes/volsync/syncthingTmp/syncthing scan 과정.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../golang/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../golang/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="a3f2cc8a-d1fc-4873-9a0b-5a50aaaae8de" name="변경" comment="network" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,7 +71,8 @@
     <MESSAGE value="grpc restful 차이" />
     <MESSAGE value="Network" />
     <MESSAGE value="Topology" />
-    <option name="LAST_COMMIT_MESSAGE" value="Topology" />
+    <MESSAGE value="network" />
+    <option name="LAST_COMMIT_MESSAGE" value="network" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
