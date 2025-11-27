@@ -29,11 +29,11 @@
 # mount /dev/sdc yw2
 mount: /mnt/yw2: wrong fs type, bad option, bad superblock on /dev/sdc, missing codepage or helper program, or other error.
 ```
-- 같은 filesystem uuid 를 가진 `/dev/sdb`가 mount 되어있는 상태에서는 `/dev/sdc`를 마운트 하려고 하면 위와 같은 에러가 발생한다. 
+- 같은 filesystem uuid 를 가진 `/dev/sdb`가 mount 되어있는 상태에서는 `/dev/sdc`를 마운트 하려고 하면 위와 같은 에러가 발생한다.
 
-**해결방법**:  
+**해결방법**:
 - **ext4 파일시스템인 경우**: UUID가 같아도 마운트가 가능하다. ext4는 UUID 충돌에 대해 더 관대하게 처리한다.
-  
+
   **예시**:
   ```bash
   # lsblk -f
@@ -52,6 +52,46 @@ mount: /mnt/yw2: wrong fs type, bad option, bad superblock on /dev/sdc, missing 
   -> 마운트 하는데 문제 없음
   ```
   - 위 예시에서 `/dev/sdb`와 `/dev/sdc`가 동일한 UUID(`0547ed6e-2a23-4e03-93bf-b390910991d5`)를 가지고 있지만, ext4 파일시스템에서는 두 디스크 모두 정상적으로 마운트가 가능하다.
+
+- **ext2, ext3, vfat 파일시스템인 경우**: UUID가 같아도 마운트가 가능하다. ext4와 마찬가지로 UUID 충돌에 대해 관대하게 처리한다.
+
+  **예시**:
+  ```bash
+  # blkid로 UUID가 겹치는 디스크 확인
+  [root@localhost ~]# blkid
+  /dev/sdf1: UUID="f71ba73f-09a9-4d49-a576-2f71c5d5e3be" SEC_TYPE="ext2" BLOCK_SIZE="4096" TYPE="ext3" PARTUUID="81381192-01"
+  /dev/sdb1: UUID="acf88c46-5073-4d70-ac75-cbdfe184f6ce" BLOCK_SIZE="4096" TYPE="ext2" PARTUUID="ef6717a8-01"
+  /dev/sdg1: UUID="62F3-E73C" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="48f2a54e-01"
+  /dev/sdd1: UUID="62F3-E73C" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="48f2a54e-01"
+  /dev/sde1: UUID="acf88c46-5073-4d70-ac75-cbdfe184f6ce" BLOCK_SIZE="4096" TYPE="ext2" PARTUUID="ef6717a8-01"
+  /dev/sdc1: UUID="f71ba73f-09a9-4d49-a576-2f71c5d5e3be" SEC_TYPE="ext2" BLOCK_SIZE="4096" TYPE="ext3" PARTUUID="81381192-01"
+  ```
+  - UUID 충돌 현황:
+    - **ext2**: `/dev/sdb1`과 `/dev/sde1` (UUID: `acf88c46-5073-4d70-ac75-cbdfe184f6ce`)
+    - **ext3**: `/dev/sdf1`과 `/dev/sdc1` (UUID: `f71ba73f-09a9-4d49-a576-2f71c5d5e3be`)
+    - **vfat**: `/dev/sdg1`과 `/dev/sdd1` (UUID: `62F3-E73C`)
+
+  ```bash
+  # 마운트 포인트 생성
+  [root@localhost ~]# mkdir -p /mnt/ext2_1 /mnt/ext2_2
+  [root@localhost ~]# mkdir -p /mnt/ext3_1 /mnt/ext3_2
+  [root@localhost ~]# mkdir -p /mnt/vfat_1 /mnt/vfat_2
+
+  # ext2 마운트 (UUID 충돌에도 정상 마운트)
+  [root@localhost mnt]# mount /dev/sdb1 /mnt/ext2_1
+  [root@localhost mnt]# mount /dev/sde1 /mnt/ext2_2
+
+  # vfat 마운트 (UUID 충돌에도 정상 마운트)
+  [root@localhost mnt]# mount /dev/sdg1 /mnt/vfat_1
+  [root@localhost mnt]# mount /dev/sdd1 /mnt/vfat_2
+
+  # ext3 마운트 (UUID 충돌에도 정상 마운트)
+  [root@localhost mnt]# mount /dev/sdf1 /mnt/ext3_1
+  [root@localhost mnt]# mount /dev/sdc1 /mnt/ext3_2
+  -> 모든 파일시스템에서 마운트 하는데 문제 없음
+  ```
+  - ext2, ext3, vfat 파일시스템은 xfs와 달리 UUID 충돌 시에도 정상적으로 마운트가 가능하다.
+
 - **xfs 파일시스템인 경우**:
   - `xfs_admin -U generate /dev/sdc` 로 파일시스템 uuid 를 변경하면 마운트가 가능하다.
   - 이후 데이터를 쓰고, `xfs_admin -U <원래_UUID> /dev/sdc`로 원복한다.
@@ -260,7 +300,7 @@ mount: /mnt/yw2: wrong fs type, bad option, bad superblock on /dev/sdc, missing 
 ```
 - `vgimportclone` 명령어로 VG name을 변경하면 PV uuid, VG uuid 도 자동으로 변경된다.
 - 이후 `partprobe` 명령어를 해주면 `/dev/mapper` 경로에 `yw1-data  yw2-data  yw3-data` 가 보이면서 마운트가 가능해진다.
-2. 볼륨 하나씩 원복(pv uuid, vg name, vg uuid) 하면서 detach  
+2. 볼륨 하나씩 원복(pv uuid, vg name, vg uuid) 하면서 detach
 ```bash
 [root@localhost ~]# vgchange -an yw1
   0 logical volume(s) in volume group "yw1" now active
@@ -421,7 +461,7 @@ lrwxrwxrwx. 1 root root 7 Sep 30 02:05 /dev/mapper/yw22-data -> ../dm-2
 
 **중요한 점**: VG Name이 겹치는 두 VG가 pvdisplay나 vgdisplay를 하면 보이지만, `/dev/yw22/`에는 하나밖에 나오지 않는다.
 
-**문제점**: 
+**문제점**:
 - VG Name이 겹치면서 LVM이 어떤 VG를 사용할지 구분하지 못함
 - `vgrename uuid` 명령어로 VG 이름 변경 필요
 - 동일한 VG 이름으로 인한 시스템 혼란 야기
